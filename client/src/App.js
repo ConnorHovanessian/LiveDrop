@@ -1,6 +1,12 @@
 // /client/App.js
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import axios from 'axios';
+//Material UI Components
+import 'typeface-roboto';
+import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
+import ThreeDRotation from '@material-ui/icons/ThreeDRotation';
+import Button from '@material-ui/core/Button';
 
 class App extends Component {
   // initialize our state
@@ -115,6 +121,9 @@ class App extends Component {
                 </li>
               ))}
         </ul>
+        <Button variant="contained" color="primary">
+          Hello World
+        </Button>
         <div style={{ padding: '10px' }}>
           <input
             type="text"
