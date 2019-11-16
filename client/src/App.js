@@ -105,6 +105,25 @@ class App extends Component {
     });
   };
 
+  putDataToDBWithLocation = (message) => {
+    let currentIds = this.state.data.map((data) => data.id);
+    let idToBeAdded = 0;
+    while (currentIds.includes(idToBeAdded)) {
+      ++idToBeAdded;
+    }
+
+    navigator.geolocation.getCurrentPosition(function(position) {
+      axios.post('http://localhost:3001/api/putData', {
+      id: idToBeAdded,
+      message: message,
+      lon: position.coords.longitude,
+      lat: position.coords.latitude
+    });
+    })
+
+    
+  };
+
   // UI
   render() {
     const { data } = this.state;
@@ -132,10 +151,10 @@ class App extends Component {
             placeholder="value to add"
           />
           <Button 
-          style={{height: '56px', width: '70px'}}
-          variant = 'outlined'
-          onClick={() => this.putDataToDB(this.state.message)}>
-            ADD
+            style={{height: '56px', width: '70px'}}
+            variant = 'outlined'
+            onClick={() => this.putDataToDBWithLocation(this.state.message)}>
+              ADD
           </Button>
         </div>
         <div style={{ padding: '10px' }}>

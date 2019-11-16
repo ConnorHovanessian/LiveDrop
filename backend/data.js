@@ -7,10 +7,14 @@ const Schema = mongoose.Schema;
 const DataSchema = new Schema(
   {
     id: Number,
-    message: String
+    message: String,
+    timestamp: Date,
+    latitude: Number,
+    longitude: Number
   },
   { timestamps: true }
 );
+
 
 // export the new Schema so we could modify it using Node.js
 module.exports = mongoose.model("Data", DataSchema);

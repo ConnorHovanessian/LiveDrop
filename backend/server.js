@@ -55,11 +55,12 @@ router.delete('/deleteData', (req, res) => {
 
 // adds new data to our database
 router.post('/putData', (req, res) => {
+  console.log("Starting Server Processing");
   let data = new Data();
 
-  const { id, message } = req.body;
+  const { id, message, lat, lon  } = req.body;
 
-  if ((!id && id !== 0) || !message) {
+  if ((!id && id !== 0) || !message || !lat || !lon) {
     return res.json({
       success: false,
       error: 'INVALID INPUTS',
@@ -67,6 +68,8 @@ router.post('/putData', (req, res) => {
   }
   data.message = message;
   data.id = id;
+  data.latitude = lat;
+  data.longitude = lon;
   data.save((err) => {
     if (err) return res.json({ success: false, error: err });
     return res.json({ success: true });
