@@ -7,6 +7,8 @@ import 'typeface-roboto';
 import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
 import ThreeDRotation from '@material-ui/icons/ThreeDRotation';
 import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
 
 class App extends Component {
   // initialize our state
@@ -103,69 +105,75 @@ class App extends Component {
     });
   };
 
-  // here is our UI
-  // it is easy to understand their functions when you
-  // see them render into our screen
+  // UI
   render() {
     const { data } = this.state;
     return (
-      <div>
-        <ul>
+      <div align='center'>
+          <Typography variant="h1" color="inherit" noWrap>
+            LiveDrop
+          </Typography>
+        <div>
           {data.length <= 0
             ? 'NO DB ENTRIES YET'
             : data.map((dat) => (
-                <li style={{ padding: '10px' }} key={data.message}>
+                <div style={{ padding: '10px' }} key={data.message}>
                   <span style={{ color: 'gray' }}> id: </span> {dat.id} <br />
                   <span style={{ color: 'gray' }}> data: </span>
                   {dat.message}
-                </li>
+                </div>
               ))}
-        </ul>
-        <Button variant="contained" color="primary">
-          Hello World
-        </Button>
+        </div>
         <div style={{ padding: '10px' }}>
-          <input
-            type="text"
+          <TextField
+            variant="filled"
+            style = {{width: '300px'}}
             onChange={(e) => this.setState({ message: e.target.value })}
-            placeholder="add something in the database"
-            style={{ width: '200px' }}
+            placeholder="value to add"
           />
-          <button onClick={() => this.putDataToDB(this.state.message)}>
+          <Button 
+          style={{height: '56px', width: '70px'}}
+          variant = 'outlined'
+          onClick={() => this.putDataToDB(this.state.message)}>
             ADD
-          </button>
+          </Button>
         </div>
         <div style={{ padding: '10px' }}>
-          <input
-            type="text"
-            style={{ width: '200px' }}
+          <TextField
+            variant="filled"
+            style={{ width: '300px' }}
             onChange={(e) => this.setState({ idToDelete: e.target.value })}
-            placeholder="put id of item to delete here"
+            placeholder="id to delete"
           />
-          <button onClick={() => this.deleteFromDB(this.state.idToDelete)}>
+          <Button 
+          style={{height: '56px', width: '70px'}}
+          variant = 'outlined' 
+          onClick={() => this.deleteFromDB(this.state.idToDelete)}>
             DELETE
-          </button>
+          </Button>
         </div>
         <div style={{ padding: '10px' }}>
-          <input
-            type="text"
-            style={{ width: '200px' }}
+          <TextField
+            variant="filled"
+            style={{ width: '300px' }}
             onChange={(e) => this.setState({ idToUpdate: e.target.value })}
-            placeholder="id of item to update here"
+            placeholder="id to update"
           />
-          <input
-            type="text"
-            style={{ width: '200px' }}
+          <TextField
+            variant="filled"
+            style={{ width: '300px' }}
             onChange={(e) => this.setState({ updateToApply: e.target.value })}
-            placeholder="put new value of the item here"
+            placeholder="new value"
           />
-          <button
+          <Button
+          style={{height: '56px', width: '70px'}}
+            variant = 'outlined'
             onClick={() =>
               this.updateDB(this.state.idToUpdate, this.state.updateToApply)
             }
           >
             UPDATE
-          </button>
+          </Button>
         </div>
       </div>
     );
