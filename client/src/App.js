@@ -29,9 +29,9 @@ class App extends Component {
   // then we incorporate a polling logic so that we can easily see if our db has
   // changed and implement those changes into our UI
   componentDidMount() {
-    this.getDataFromDb();
+    this.getDataFromDbWithLocation();
     if (!this.state.intervalIsSet) {
-      let interval = setInterval(this.getDataFromDb, 1000);
+      let interval = setInterval(this.getDataFromDbWithLocation, 1000);
       this.setState({ intervalIsSet: interval });
     }
   }
@@ -52,14 +52,9 @@ class App extends Component {
 
   // fetch all data from our data base
   getDataFromDb = () => {
-    fetch('http://localhost:3001/api/getData')
-      .then((data) => data.json())
-      .then((res) => this.setState({ data: res.data }));
-  //   var self = this;
-  //     axios.get('http://localhost:3001/api/getData')
-  //    .then((response) => {
-  //      self.setState({data: response.data})
-  //    })
+    var self = this;
+    axios.get('http://localhost:3001/api/getData')
+      .then((res) => self.setState({ data: res.data.data}));
   };
 
   //get all data within a distance from client
@@ -73,7 +68,7 @@ class App extends Component {
         }
       })
       .then(function (res) {
-        self.setState({data: res.data})
+        self.setState({data: res.data.data})
       })
     });
     }
@@ -145,6 +140,7 @@ class App extends Component {
 
   // UI
   render() {
+    console.log("State data: " + JSON.stringify(this.state));
     const { data } = this.state;
     return (
       <div align='center'>

@@ -33,23 +33,25 @@ app.use(logger('dev', {
 router.get('/getData', (req, res) => {
   Data.find((err, data) => {
     if (err) return res.json({ success: false, error: err });
-    return res.json({ success: true, data: data });
+    return res.json({ success: true, data: data});
   });
 });
 
 // fetches all available data in our database that is close to given position
 router.get('/getDataWithLocation', (req, res) => {
-  
-  Data.find( { 
-    //latitude: { $gte: req.body.latitude-10, $lte :  10+req.body.latitude },
-    //longitude: { $gte: req.body.longitude-10, $lte :  10+req.body.longitude }
-    latitude: { $gte: 40, $lte :  50 },
-    longitude: { $gte: -130, $lte :  -120 }
-  }, function(err, data) {
+  //console.log('req.query: ' + (JSON.stringify(req.query)));
+  Data.find({ 
+    //Use unary + since the lat,long are stored as strings
+    latitude: { $gte: req.query.latitude-10, $lte :  10 + + req.query.latitude },
+    longitude: { $gte: req.query.longitude-10, $lte :  10 + + req.query.longitude }
+    //latitude: { $gte: 40, $lte :  50 },
+    //longitude: { $gte: -130, $lte :  -120 }
+  }, (err, data) => {
     if (err) return res.json({ success: false, error: err });
     return res.json({ success: true, data: data });
-  }
+    }
   );
+
 });
 
 // overwrites existing data in our database
