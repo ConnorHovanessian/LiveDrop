@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
+import $ from 'jquery'; 
 //Material UI Components
 import 'typeface-roboto';
 import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
@@ -21,6 +22,8 @@ class App extends Component {
     idToUpdate: null,
     objectToUpdate: null,
   };
+
+  static something = this; 
 
   // when component mounts, first thing it does is fetch all existing data in our db
   // then we incorporate a polling logic so that we can easily see if our db has
@@ -47,16 +50,36 @@ class App extends Component {
   // for our back end, we use the object id assigned by MongoDB to modify
   // data base entries
 
-  // our first get method that uses our backend api to
-  // fetch data from our data base
+  // fetch all data from our data base
   getDataFromDb = () => {
     fetch('http://localhost:3001/api/getData')
       .then((data) => data.json())
       .then((res) => this.setState({ data: res.data }));
+  //   var self = this;
+  //     axios.get('http://localhost:3001/api/getData')
+  //    .then((response) => {
+  //      self.setState({data: response.data})
+  //    })
   };
 
-  // our put method that uses our backend api
-  // to create new query into our data base
+  //get all data within a distance from client
+  getDataFromDbWithLocation = () => {
+    var self = this;
+    navigator.geolocation.getCurrentPosition(function(position) {
+      axios.get('http://localhost:3001/api/getDataWithLocation', {
+        params: {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        }
+      })
+      .then(function (res) {
+        self.setState({data: res.data})
+      })
+    });
+    }
+
+
+  // put new data into our db
   putDataToDB = (message) => {
     let currentIds = this.state.data.map((data) => data.id);
     let idToBeAdded = 0;
@@ -70,8 +93,7 @@ class App extends Component {
     });
   };
 
-  // our delete method that uses our backend api
-  // to remove existing database information
+  // remove existing database information
   deleteFromDB = (idTodelete) => {
     parseInt(idTodelete);
     let objIdToDelete = null;
@@ -88,8 +110,7 @@ class App extends Component {
     });
   };
 
-  // our update method that uses our backend api
-  // to overwrite existing data base information
+  // overwrite existing data base information
   updateDB = (idToUpdate, updateToApply) => {
     let objIdToUpdate = null;
     parseInt(idToUpdate);
@@ -120,8 +141,6 @@ class App extends Component {
       lat: position.coords.latitude
     });
     })
-
-    
   };
 
   // UI
@@ -133,13 +152,18 @@ class App extends Component {
             LiveDrop
           </Typography>
         <div>
-          {data.length <= 0
+          {
+            data.length <= 0
             ? 'NO DB ENTRIES YET'
             : data.map((dat) => (
                 <div style={{ padding: '10px' }} key={data.message}>
                   <span style={{ color: 'gray' }}> id: </span> {dat.id} <br />
                   <span style={{ color: 'gray' }}> data: </span>
                   {dat.message}
+                  <span style={{ color: 'gray' }}> latitude: </span>
+                  {dat.latitude}
+                  <span style={{ color: 'gray' }}> longitude: </span>
+                  {dat.longitude}
                 </div>
               ))}
         </div>

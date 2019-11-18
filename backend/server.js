@@ -25,7 +25,9 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 // bodyParser, parses the request body to be a readable json format
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(logger('dev'));
+app.use(logger('dev', {
+  skip: function (req, res) { return res.statusCode == 304 }
+}))
 
 // fetches all available data in our database
 router.get('/getData', (req, res) => {
@@ -33,6 +35,21 @@ router.get('/getData', (req, res) => {
     if (err) return res.json({ success: false, error: err });
     return res.json({ success: true, data: data });
   });
+});
+
+// fetches all available data in our database that is close to given position
+router.get('/getDataWithLocation', (req, res) => {
+  
+  Data.find( { 
+    //latitude: { $gte: req.body.latitude-10, $lte :  10+req.body.latitude },
+    //longitude: { $gte: req.body.longitude-10, $lte :  10+req.body.longitude }
+    latitude: { $gte: 40, $lte :  50 },
+    longitude: { $gte: -130, $lte :  -120 }
+  }, function(err, data) {
+    if (err) return res.json({ success: false, error: err });
+    return res.json({ success: true, data: data });
+  }
+  );
 });
 
 // overwrites existing data in our database
@@ -55,7 +72,6 @@ router.delete('/deleteData', (req, res) => {
 
 // adds new data to our database
 router.post('/putData', (req, res) => {
-  console.log("Starting Server Processing");
   let data = new Data();
 
   const { id, message, lat, lon  } = req.body;
