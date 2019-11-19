@@ -110,20 +110,6 @@ router.post('/putComment', (req, res) => {
     });
     return res.json({ success: true });
   });
-
-  
-
-  
-n.save(function(err,room) {
-  console.log(room.id);
-});
-
-  
-  collection.insert(objectToInsert, function(err){
-    if (err) return;
-    // Object inserted successfully.
-    var objectId = objectToInsert._id; // this will return the id of object inserted
-  });
 });
 
 // append /api for our http requests

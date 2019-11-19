@@ -17,6 +17,7 @@ class App extends Component {
     data: [],
     id: 0,
     message: null,
+    comment: null,
     intervalIsSet: false,
     idToDelete: null,
     idToUpdate: null,
@@ -85,6 +86,14 @@ class App extends Component {
     axios.post('http://localhost:3001/api/putData', {
       id: idToBeAdded,
       message: message,
+    });
+  };
+
+  // add new comment under parent
+  putCommentToDB = (message, parentID) => {
+    axios.post('http://localhost:3001/api/putComment', {
+      message: message,
+      parentID: parentID
     });
   };
 
@@ -160,6 +169,20 @@ class App extends Component {
                   {dat.latitude}
                   <span style={{ color: 'gray' }}> longitude: </span>
                   {dat.longitude}
+                  <span style={{ color: 'gray' }}> longitude: </span>
+                  <div>{"\n"}</div>
+                  <TextField
+                    variant="filled"
+                    style = {{width: '300px'}}
+                    onChange={(e) => this.setState({ comment: e.target.value })}
+                    placeholder="comment"
+                  />
+                  <Button 
+                    style={{height: '56px', width: '70px'}}
+                    variant = 'outlined'
+                    onClick={() => this.putCommentToDB(this.state.comment, dat._id)}>
+                      POST 
+                  </Button>
                 </div>
               ))}
         </div>
