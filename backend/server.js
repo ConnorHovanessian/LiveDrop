@@ -4,6 +4,7 @@ var cors = require('cors');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
 const Data = require('./data');
+const Comment = require('./comment');
 
 const API_PORT = 3001;
 const app = express();
@@ -44,8 +45,6 @@ router.get('/getDataWithLocation', (req, res) => {
     //Use unary + since the lat,long are stored as strings
     latitude: { $gte: req.query.latitude-10, $lte :  10 + + req.query.latitude },
     longitude: { $gte: req.query.longitude-10, $lte :  10 + + req.query.longitude }
-    //latitude: { $gte: 40, $lte :  50 },
-    //longitude: { $gte: -130, $lte :  -120 }
   }, (err, data) => {
     if (err) return res.json({ success: false, error: err });
     return res.json({ success: true, data: data });
@@ -75,8 +74,7 @@ router.delete('/deleteData', (req, res) => {
 // adds new data to our database
 router.post('/putData', (req, res) => {
   let data = new Data();
-
-  const { id, message, lat, lon  } = req.body;
+  const { id, message, lat, lon} = req.body;
 
   if ((!id && id !== 0) || !message || !lat || !lon) {
     return res.json({
@@ -84,6 +82,7 @@ router.post('/putData', (req, res) => {
       error: 'INVALID INPUTS',
     });
   }
+
   data.message = message;
   data.id = id;
   data.latitude = lat;
@@ -91,6 +90,39 @@ router.post('/putData', (req, res) => {
   data.save((err) => {
     if (err) return res.json({ success: false, error: err });
     return res.json({ success: true });
+  });
+});
+
+//Add a comment to a given parent id
+router.post('/putComment', (req, res) => {
+  let comment = new Comment();
+  const { message, parentID } = req.body;
+
+  comment.message = message;
+  //Save Comment
+  comment.save((err, com) => {
+    if (err) return res.json({ success: false, error: err });
+    //Find Parent by id, update it's child array
+    Data.findOne({ _id: parentID }, function (err, doc){
+      if (err) return res.json({ success: false, error: err });
+      doc.children.push(com._id);
+      doc.save();
+    });
+    return res.json({ success: true });
+  });
+
+  
+
+  
+n.save(function(err,room) {
+  console.log(room.id);
+});
+
+  
+  collection.insert(objectToInsert, function(err){
+    if (err) return;
+    // Object inserted successfully.
+    var objectId = objectToInsert._id; // this will return the id of object inserted
   });
 });
 
