@@ -4,12 +4,26 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 import $ from 'jquery'; 
 //Material UI Components
+import { makeStyles } from '@material-ui/core/styles';
 import 'typeface-roboto';
 import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
 import ThreeDRotation from '@material-ui/icons/ThreeDRotation';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
+import Divider from '@material-ui/core/Divider';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+
+
+function generate(element) {
+  return [0, 1, 2].map(value =>
+    React.cloneElement(element, {
+      key: value,
+    }),
+  );
+}
 
 class App extends Component {
   // initialize our state
@@ -23,8 +37,6 @@ class App extends Component {
     idToUpdate: null,
     objectToUpdate: null,
   };
-
-  static something = this; 
 
   // when component mounts, first thing it does is fetch all existing data in our db
   // then we incorporate a polling logic so that we can easily see if our db has
@@ -57,6 +69,19 @@ class App extends Component {
     axios.get('http://localhost:3001/api/getData')
       .then((res) => self.setState({ data: res.data.data}));
   };
+
+  //get all data within a distance from client
+  getDataFromDbByID = (ID) => {
+    var self = this;
+    axios.get('http://localhost:3001/api/getDataByIDs', {
+      params: {
+        ID: ID
+      }
+    })
+    .then(function (res) {
+      self.setState({data: res.data.data})
+    })
+    }
 
   //get all data within a distance from client
   getDataFromDbWithLocation = () => {
@@ -169,8 +194,19 @@ class App extends Component {
                   {dat.latitude}
                   <span style={{ color: 'gray' }}> longitude: </span>
                   {dat.longitude}
-                  <span style={{ color: 'gray' }}> longitude: </span>
                   <div>{"\n"}</div>
+
+                  <div style={{width: 600}}>
+                  {
+                    dat.children <= 0
+                    ? 'NO COMMENTS YET'
+                    : dat.children.map((com) => (
+                      <ListItem >
+                        <ListItemText align='center' primary = 'pizza'/>{com.message}
+                      </ListItem>
+                  ))}  
+                  </div>
+
                   <TextField
                     variant="filled"
                     style = {{width: '300px'}}
@@ -186,6 +222,7 @@ class App extends Component {
                 </div>
               ))}
         </div>
+
         <div style={{ padding: '10px' }}>
           <TextField
             variant="filled"
