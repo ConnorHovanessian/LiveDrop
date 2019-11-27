@@ -39,6 +39,7 @@ router.get('/getData', (req, res) => {
 });
 
 // fetches all available data in our database that is close to given position
+// data stores all the thread objects
 router.get('/getDataWithLocation', (req, res) => {
   //console.log('req.query: ' + (JSON.stringify(req.query)));
   Data.find({ 
@@ -47,10 +48,9 @@ router.get('/getDataWithLocation', (req, res) => {
     longitude: { $gte: req.query.longitude-10, $lte :  10 + + req.query.longitude }
   }, (err, data) => {
     if (err) return res.json({ success: false, error: err });
-    return res.json({ success: true, data: data });
+    return res.json({ success: true, data: data});
     }
   );
-
 });
 
 // overwrites existing data in our database
@@ -95,21 +95,15 @@ router.post('/putData', (req, res) => {
 
 //Add a comment to a given parent id
 router.post('/putComment', (req, res) => {
-  let comment = new Comment();
   const { message, parentID } = req.body;
 
-  comment.message = message;
-  //Save Comment
-  comment.save((err, com) => {
-    if (err) return res.json({ success: false, error: err });
-    //Find Parent by id, update it's child array
-    Data.findOne({ _id: parentID }, function (err, doc){
-      if (err) return res.json({ success: false, error: err });
-      doc.children.push(com._id);
-      doc.save();
-    });
-    return res.json({ success: true });
+  Data.update(
+    { "_id": parentID },
+    { $push: { "children": message } } 
+   ).then(function (err, updElem) {
+    console.log("updElem" + JSON.stringify(updElem));     
   });
+
 });
 
 // append /api for our http requests

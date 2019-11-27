@@ -202,7 +202,7 @@ class App extends Component {
                     ? 'NO COMMENTS YET'
                     : dat.children.map((com) => (
                       <ListItem >
-                        <ListItemText align='center' primary = 'pizza'/>{com.message}
+                        <ListItemText align='center' primary = {com}/>
                       </ListItem>
                   ))}  
                   </div>
