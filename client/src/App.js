@@ -15,6 +15,7 @@ import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import Paper from '@material-ui/core/Paper';
 
 
 function generate(element) {
@@ -187,23 +188,26 @@ class App extends Component {
             ? 'NO DB ENTRIES YET'
             : data.map((dat) => (
                 <div style={{ padding: '10px' }} key={data.message}>
-                  <span style={{ color: 'gray' }}> id: </span> {dat.id} <br />
-                  <span style={{ color: 'gray' }}> data: </span>
-                  {dat.message}
-                  <span style={{ color: 'gray' }}> latitude: </span>
-                  {dat.latitude}
-                  <span style={{ color: 'gray' }}> longitude: </span>
-                  {dat.longitude}
+                <Paper>
+                      <Typography variant="h5" component="h3">
+                        {dat.message}
+                      </Typography>
+                      <Typography component="p">
+                        {dat.message}
+                      </Typography>
+
                   <div>{"\n"}</div>
 
                   <div style={{width: 600}}>
                   {
                     dat.children <= 0
-                    ? 'NO COMMENTS YET'
+                    ? 'No comments yet!'
                     : dat.children.map((com) => (
                       <ListItem >
                         <ListItemText align='center' primary = {com}/>
                       </ListItem>
+
+                      
                   ))}  
                   </div>
 
@@ -219,6 +223,7 @@ class App extends Component {
                     onClick={() => this.putCommentToDB(this.state.comment, dat._id)}>
                       POST 
                   </Button>
+                </Paper>
                 </div>
               ))}
         </div>
@@ -228,50 +233,13 @@ class App extends Component {
             variant="filled"
             style = {{width: '300px'}}
             onChange={(e) => this.setState({ message: e.target.value })}
-            placeholder="value to add"
+            placeholder="post to add"
           />
           <Button 
             style={{height: '56px', width: '70px'}}
             variant = 'outlined'
             onClick={() => this.putDataToDBWithLocation(this.state.message)}>
               ADD
-          </Button>
-        </div>
-        <div style={{ padding: '10px' }}>
-          <TextField
-            variant="filled"
-            style={{ width: '300px' }}
-            onChange={(e) => this.setState({ idToDelete: e.target.value })}
-            placeholder="id to delete"
-          />
-          <Button 
-          style={{height: '56px', width: '70px'}}
-          variant = 'outlined' 
-          onClick={() => this.deleteFromDB(this.state.idToDelete)}>
-            DELETE
-          </Button>
-        </div>
-        <div style={{ padding: '10px' }}>
-          <TextField
-            variant="filled"
-            style={{ width: '300px' }}
-            onChange={(e) => this.setState({ idToUpdate: e.target.value })}
-            placeholder="id to update"
-          />
-          <TextField
-            variant="filled"
-            style={{ width: '300px' }}
-            onChange={(e) => this.setState({ updateToApply: e.target.value })}
-            placeholder="new value"
-          />
-          <Button
-          style={{height: '56px', width: '70px'}}
-            variant = 'outlined'
-            onClick={() =>
-              this.updateDB(this.state.idToUpdate, this.state.updateToApply)
-            }
-          >
-            UPDATE
           </Button>
         </div>
       </div>

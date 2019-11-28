@@ -100,8 +100,9 @@ router.post('/putComment', (req, res) => {
   Data.update(
     { "_id": parentID },
     { $push: { "children": message } } 
-   ).then(function (err, updElem) {
-    console.log("updElem" + JSON.stringify(updElem));     
+   ).then(function (err) {
+    if (err) return res.send(err);
+    return res.json({ success: true });    
   });
 
 });
