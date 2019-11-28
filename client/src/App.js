@@ -45,7 +45,7 @@ class App extends Component {
   componentDidMount() {
     this.getDataFromDbWithLocation();
     if (!this.state.intervalIsSet) {
-      let interval = setInterval(this.getDataFromDbWithLocation, 1000);
+      let interval = setInterval(this.getDataFromDbWithLocation, 5000);
       this.setState({ intervalIsSet: interval });
     }
   }
@@ -58,11 +58,6 @@ class App extends Component {
       this.setState({ intervalIsSet: null });
     }
   }
-
-  // just a note, here, in the front end, we use the id key of our data object
-  // in order to identify which we want to Update or delete.
-  // for our back end, we use the object id assigned by MongoDB to modify
-  // data base entries
 
   // fetch all data from our data base
   getDataFromDb = () => {
@@ -92,14 +87,12 @@ class App extends Component {
         params: {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude
-        }
-      })
+      }})
       .then(function (res) {
         self.setState({data: res.data.data})
       })
     });
     }
-
 
   // put new data into our db
   putDataToDB = (message) => {
@@ -189,7 +182,7 @@ class App extends Component {
             ? 'NO DB ENTRIES YET'
             : data.map((dat) => (
                 <div style={{ padding: '10px' }} key={data.message}>
-                <Paper>
+                <Paper style={{width: 900}}>
                       <Typography variant="h5" component="h3">
                         {dat.title}
                       </Typography>
@@ -199,17 +192,18 @@ class App extends Component {
 
                   <div>{"\n"}</div>
 
-                  <div style={{width: 600}}>
-                  {
-                    dat.children <= 0
-                    ? 'No comments yet!'
-                    : dat.children.map((com) => (
-                      <ListItem >
-                        <ListItemText align='center' primary = {com}/>
-                      </ListItem>
-
-                      
-                  ))}  
+                  <div style={{width: 850}}>
+                    {
+                      dat.children <= 0
+                      ? 'No comments yet!'
+                      : dat.children.map((com) => (
+                        <>
+                        <Divider/>
+                        <ListItem >
+                          <ListItemText align='center' primary = {com}/>
+                        </ListItem>
+                        </>
+                    ))}  
                   </div>
                   <TextField
                     variant="filled"
@@ -235,12 +229,14 @@ class App extends Component {
             onChange={(e) => this.setState({ title: e.target.value })}
             placeholder="title"
           />
+          <div>{"\n"}</div>
           <TextField
             variant="filled"
             style = {{width: '300px'}}
             onChange={(e) => this.setState({ message: e.target.value })}
             placeholder="post text"
           />
+          <div>{"\n"}</div>
           <Button 
             style={{height: '56px', width: '70px'}}
             variant = 'outlined'
