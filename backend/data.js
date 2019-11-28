@@ -6,11 +6,12 @@ const Schema = mongoose.Schema;
 const DataSchema = new Schema(
   {
     id: Number,
+    title: String,
     message: String,
     timestamp: Date,
     latitude: Number,
     longitude: Number,
-    children: [String] //Saves reference to children
+    children: [String] 
   },
   { timestamps: true }
 );

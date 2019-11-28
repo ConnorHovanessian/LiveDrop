@@ -74,7 +74,7 @@ router.delete('/deleteData', (req, res) => {
 // adds new data to our database
 router.post('/putData', (req, res) => {
   let data = new Data();
-  const { id, message, lat, lon} = req.body;
+  const { id, title, message, lat, lon} = req.body;
 
   if ((!id && id !== 0) || !message || !lat || !lon) {
     return res.json({
@@ -83,6 +83,7 @@ router.post('/putData', (req, res) => {
     });
   }
 
+  data.title = title;
   data.message = message;
   data.id = id;
   data.latitude = lat;

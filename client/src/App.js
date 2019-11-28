@@ -31,8 +31,8 @@ class App extends Component {
   state = {
     data: [],
     id: 0,
+    title: null,
     message: null,
-    comment: null,
     intervalIsSet: false,
     idToDelete: null,
     idToUpdate: null,
@@ -156,7 +156,7 @@ class App extends Component {
     });
   };
 
-  putDataToDBWithLocation = (message) => {
+  putDataToDBWithLocation = (title, message) => {
     let currentIds = this.state.data.map((data) => data.id);
     let idToBeAdded = 0;
     while (currentIds.includes(idToBeAdded)) {
@@ -166,6 +166,7 @@ class App extends Component {
     navigator.geolocation.getCurrentPosition(function(position) {
       axios.post('http://localhost:3001/api/putData', {
       id: idToBeAdded,
+      title: title,
       message: message,
       lon: position.coords.longitude,
       lat: position.coords.latitude
@@ -190,7 +191,7 @@ class App extends Component {
                 <div style={{ padding: '10px' }} key={data.message}>
                 <Paper>
                       <Typography variant="h5" component="h3">
-                        {dat.message}
+                        {dat.title}
                       </Typography>
                       <Typography component="p">
                         {dat.message}
@@ -210,7 +211,6 @@ class App extends Component {
                       
                   ))}  
                   </div>
-
                   <TextField
                     variant="filled"
                     style = {{width: '300px'}}
@@ -232,13 +232,19 @@ class App extends Component {
           <TextField
             variant="filled"
             style = {{width: '300px'}}
+            onChange={(e) => this.setState({ title: e.target.value })}
+            placeholder="title"
+          />
+          <TextField
+            variant="filled"
+            style = {{width: '300px'}}
             onChange={(e) => this.setState({ message: e.target.value })}
-            placeholder="post to add"
+            placeholder="post text"
           />
           <Button 
             style={{height: '56px', width: '70px'}}
             variant = 'outlined'
-            onClick={() => this.putDataToDBWithLocation(this.state.message)}>
+            onClick={() => this.putDataToDBWithLocation(this.state.title, this.state.message)}>
               ADD
           </Button>
         </div>
