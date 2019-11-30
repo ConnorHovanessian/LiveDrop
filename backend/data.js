@@ -11,7 +11,7 @@ const DataSchema = new Schema(
     timestamp: Date,
     latitude: Number,
     longitude: Number,
-    children: [String] 
+    children: [String]
   },
   { timestamps: true }
 );

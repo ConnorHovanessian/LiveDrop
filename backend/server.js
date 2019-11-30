@@ -88,6 +88,7 @@ router.post('/putData', (req, res) => {
   data.id = id;
   data.latitude = lat;
   data.longitude = lon;
+  data.render = false;
   data.save((err) => {
     if (err) return res.json({ success: false, error: err });
     return res.json({ success: true });

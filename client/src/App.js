@@ -16,15 +16,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Paper from '@material-ui/core/Paper';
-
-
-function generate(element) {
-  return [0, 1, 2].map(value =>
-    React.cloneElement(element, {
-      key: value,
-    }),
-  );
-}
+import Collapse from '@material-ui/core/Collapse';
 
 class App extends Component {
   // initialize our state
@@ -37,6 +29,7 @@ class App extends Component {
     idToDelete: null,
     idToUpdate: null,
     objectToUpdate: null,
+    toRender: new Set
   };
 
   // when component mounts, first thing it does is fetch all existing data in our db
@@ -167,6 +160,24 @@ class App extends Component {
     })
   };
 
+  //helper that toggles the existence of an id in our map
+  //never modify state directly
+  toggleState = (id) => {
+    console.log('toggling state');
+    if(this.state.toRender.has(id))
+    {
+      var tempSet = this.state.toRender;
+      tempSet.delete(id);
+      this.setState({ toRender: tempSet })
+    }
+    else
+    {
+      var tempSet = this.state.toRender;
+      tempSet.add(id);
+      this.setState({ toRender: tempSet })
+    }
+  }
+
   // UI
   render() {
     console.log("State data: " + JSON.stringify(this.state));
@@ -183,40 +194,45 @@ class App extends Component {
             : data.map((dat) => (
                 <div style={{ padding: '10px' }} key={data.message}>
                 <Paper style={{width: 900}}>
-                      <Typography variant="h5" component="h3">
-                        {dat.title}
-                      </Typography>
-                      <Typography component="p">
-                        {dat.message}
-                      </Typography>
-
+                  <Typography variant="h5" component="h3"
+                  onClick={() => 
+                    this.toggleState(dat._id)}>
+                    {dat.title}
+                  </Typography>
+                  <Typography component="p"
+                  onClick={() => 
+                    this.toggleState(dat._id)}>
+                    {dat.message}
+                  </Typography>
                   <div>{"\n"}</div>
 
-                  <div style={{width: 850}}>
-                    {
-                      dat.children <= 0
-                      ? 'No comments yet!'
-                      : dat.children.map((com) => (
-                        <>
-                        <Divider/>
-                        <ListItem >
-                          <ListItemText align='center' primary = {com}/>
-                        </ListItem>
-                        </>
-                    ))}  
-                  </div>
-                  <TextField
-                    variant="filled"
-                    style = {{width: '300px'}}
-                    onChange={(e) => this.setState({ comment: e.target.value })}
-                    placeholder="comment"
-                  />
-                  <Button 
-                    style={{height: '56px', width: '70px'}}
-                    variant = 'outlined'
-                    onClick={() => this.putCommentToDB(this.state.comment, dat._id)}>
-                      POST 
-                  </Button>
+                  <Collapse in={this.state.toRender.has(dat._id)}>
+                    <div style={{width: 850}}>
+                      {
+                        dat.children <= 0
+                        ? 'No comments yet!'
+                        : dat.children.map((com) => (
+                          <>
+                          <Divider/>
+                          <ListItem >
+                            <ListItemText align='center' primary = {com}/>
+                          </ListItem>
+                          </>
+                      ))}  
+                    </div>
+                    <TextField
+                      variant="filled"
+                      style = {{width: '300px'}}
+                      onChange={(e) => this.setState({ comment: e.target.value })}
+                      placeholder="comment"
+                    />
+                    <Button 
+                      style={{height: '56px', width: '70px'}}
+                      variant = 'outlined'
+                      onClick={() => this.putCommentToDB(this.state.comment, dat._id)}>
+                        POST 
+                    </Button>
+                  </Collapse>
                 </Paper>
                 </div>
               ))}
